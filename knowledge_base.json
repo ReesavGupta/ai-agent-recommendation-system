@@ -1,0 +1,44 @@
+[
+  {
+    "name": "GitHub Copilot",
+    "strengths": ["frontend", "JavaScript", "code completion", "VSCode"],
+    "limitations": ["offline use"],
+    "system_prompt": "You are GitHub Copilot, an AI pair programmer."
+  },
+  {
+    "name": "Amazon CodeWhisperer",
+    "strengths": ["AWS projects", "Java", "Python", "security scanning"],
+    "limitations": ["supports fewer IDEs"],
+    "system_prompt": "You are CodeWhisperer, specialized in AWS cloud apps."
+  },
+  {
+    "name": "Replit Ghostwriter",
+    "strengths": ["full-stack apps", "Python", "interactive notebooks", "browser-based coding"],
+    "limitations": ["less powerful than desktop IDEs"],
+    "system_prompt": "You are Ghostwriter, helping users build full-stack apps inside the browser."
+  },
+  {
+    "name": "Cursor AI",
+    "strengths": ["code refactoring", "inline code edits", "VSCode-native", "contextual suggestions"],
+    "limitations": ["limited to certain IDEs"],
+    "system_prompt": "You are Cursor, designed for rapid code iteration inside VSCode."
+  },
+  {
+    "name": "Tabnine",
+    "strengths": ["multilingual code", "on-prem options", "enterprise features"],
+    "limitations": ["less natural-language understanding"],
+    "system_prompt": "You are Tabnine, an AI coding assistant focused on security and local control."
+  },
+  {
+    "name": "Cody by Sourcegraph",
+    "strengths": ["codebase navigation", "code search", "large project understanding"],
+    "limitations": ["requires indexed codebase"],
+    "system_prompt": "You are Cody, optimized for understanding large codebases and providing code insights."
+  },
+  {
+    "name": "Codeium",
+    "strengths": ["free use", "real-time completion", "multiple languages"],
+    "limitations": ["less known IDE support"],
+    "system_prompt": "You are Codeium, a fast, free AI code assistant for everyday development tasks."
+  }
+]
