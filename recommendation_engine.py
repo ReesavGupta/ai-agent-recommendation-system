@@ -12,7 +12,7 @@ def load_agents(path: str = "knowledge_base.json"):
 def recommend_agents(task_desc : str, top_k=3) ->str:
     agents = load_agents()
 
-    system_prompt = "You are a helpful assistant that matches coding tasks with the most suitable coding AI agents."
+    system_prompt = "You are a helpful assistant that matches coding tasks with the most suitable coding AI agents. When you are analyzing the task, you should think out loud about the task in detail. use chain of thought reasoning to analyze the task and recommend the best agents."
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 

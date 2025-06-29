@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Recommendation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .result h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .result-content {
+            line-height: 1.6;
+            color: #555;
+            white-space: pre-wrap;
+        }
+
+        .error {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 10px;
+            color: #c33;
+        }
+
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .agent-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e1e5e9;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .agent-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .agent-card .strengths {
+            margin-bottom: 10px;
+        }
+
+        .agent-card .strengths strong {
+            color: #333;
+        }
+
+        .agent-card .strengths span {
+            background: #e8f4fd;
+            color: #667eea;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        .agent-card .limitations {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .agents-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Agent Recommender</h1>
+            <p>Get personalized recommendations for the best AI coding assistants based on your project needs</p>
+        </div>
+        
+        <div class="content">
+            <form id="recommendationForm">
+                <div class="form-group">
+                    <label for="taskDescription">Describe your coding task or project:</label>
+                    <textarea 
+                        id="taskDescription" 
+                        name="taskDescription" 
+                        placeholder="e.g., I'm building a React web app with TypeScript and need help with state management and API integration..."
+                        required
+                    ></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Get AI Agent Recommendations
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing your task and finding the best AI agents...</p>
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <div class="result" id="result">
+                <h3>🎯 Recommended AI Agents</h3>
+                <div class="result-content" id="resultContent"></div>
+            </div>
+
+            <div class="agents-grid" id="agentsGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Available agents data
+        const agents = [
+            {
+                "name": "GitHub Copilot",
+                "strengths": ["frontend", "JavaScript", "code completion", "VSCode"],
+                "limitations": ["offline use"],
+                "system_prompt": "You are GitHub Copilot, an AI pair programmer."
+            },
+            {
+                "name": "Amazon CodeWhisperer",
+                "strengths": ["AWS projects", "Java", "Python", "security scanning"],
+                "limitations": ["supports fewer IDEs"],
+                "system_prompt": "You are CodeWhisperer, specialized in AWS cloud apps."
+            },
+            {
+                "name": "Replit Ghostwriter",
+                "strengths": ["full-stack apps", "Python", "interactive notebooks", "browser-based coding"],
+                "limitations": ["less powerful than desktop IDEs"],
+                "system_prompt": "You are Ghostwriter, helping users build full-stack apps inside the browser."
+            },
+            {
+                "name": "Cursor AI",
+                "strengths": ["code refactoring", "inline code edits", "VSCode-native", "contextual suggestions"],
+                "limitations": ["limited to certain IDEs"],
+                "system_prompt": "You are Cursor, designed for rapid code iteration inside VSCode."
+            },
+            {
+                "name": "Tabnine",
+                "strengths": ["multilingual code", "on-prem options", "enterprise features"],
+                "limitations": ["less natural-language understanding"],
+                "system_prompt": "You are Tabnine, an AI coding assistant focused on security and local control."
+            },
+            {
+                "name": "Cody by Sourcegraph",
+                "strengths": ["codebase navigation", "code search", "large project understanding"],
+                "limitations": ["requires indexed codebase"],
+                "system_prompt": "You are Cody, optimized for understanding large codebases and providing code insights."
+            },
+            {
+                "name": "Codeium",
+                "strengths": ["free use", "real-time completion", "multiple languages"],
+                "limitations": ["less known IDE support"],
+                "system_prompt": "You are Codeium, a fast, free AI code assistant for everyday development tasks."
+            }
+        ];
+
+        // Display all available agents
+        function displayAgents() {
+            const agentsGrid = document.getElementById('agentsGrid');
+            agentsGrid.innerHTML = '<h3 style="grid-column: 1 / -1; margin-bottom: 20px; color: #333;">📚 Available AI Agents</h3>';
+            
+            agents.forEach(agent => {
+                const agentCard = document.createElement('div');
+                agentCard.className = 'agent-card';
+                agentCard.innerHTML = `
+                    <h4>${agent.name}</h4>
+                    <div class="strengths">
+                        <strong>Strengths:</strong><br>
+                        ${agent.strengths.map(strength => `<span>${strength}</span>`).join('')}
+                    </div>
+                    <div class="limitations">
+                        <strong>Limitations:</strong> ${agent.limitations.join(', ')}
+                    </div>
+                `;
+                agentsGrid.appendChild(agentCard);
+            });
+        }
+
+        // Handle form submission
+        document.getElementById('recommendationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const taskDescription = document.getElementById('taskDescription').value.trim();
+            if (!taskDescription) {
+                showError('Please describe your coding task.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const error = document.getElementById('error');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Getting Recommendations...';
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            error.style.display = 'none';
+
+            try {
+                const response = await fetch('http://localhost:8000/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prompt: taskDescription
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Display results
+                document.getElementById('resultContent').textContent = data.recommendations;
+                result.style.display = 'block';
+                
+                // Scroll to results
+                result.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (err) {
+                console.error('Error:', err);
+                showError('Failed to get recommendations. Please make sure the backend server is running on http://localhost:8000');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Get AI Agent Recommendations';
+                loading.style.display = 'none';
+            }
+        });
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+            error.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize the page
+        displayAgents();
+    </script>
+</body>
+</html> 
